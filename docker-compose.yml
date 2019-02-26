@@ -1,0 +1,121 @@
+version: "3"
+
+services:
+  #############################
+  # ELASTICSEARCH MASTER NODE #
+  #############################
+  master:
+    restart: unless-stopped
+    image: honvid/elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - node.name=node1
+      - node.master=true
+      - node.ingest=false
+      - node.data=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - data:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+  ####################################
+  # ELASTICSEARCH CLIENT/INGEST NODE #
+  ####################################
+  ingest:
+    restart: unless-stopped
+    image: honvid/elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - node.master=true
+      - node.ingest=true
+      - node.data=false
+      - discovery.zen.ping.unicast.hosts=master
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+    links:
+     - master:elastic-master
+    depends_on:
+      - master
+    networks:
+      - elastic
+  ####################################
+  # ELASTICSEARCH CLIENT/INGEST NODE #
+  ####################################
+  head:
+    restart: unless-stopped
+    image: honvid/elasticsearch-head
+    ports:
+      - "9100:9100"
+    networks:
+      - elastic
+  ###########################
+  # ELASTICSEARCH DATA NODE #
+  ###########################
+  node:
+    restart: unless-stopped
+    image: honvid/elasticsearch
+    environment:
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - cluster.name=docker-cluster
+      - node.name=node2
+      - node.master=false
+      - node.ingest=false
+      - node.data=true
+      - discovery.zen.ping.unicast.hosts=master
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    links:
+     - master:elastic-master
+    depends_on:
+      - master
+    # volumes:
+    #   - data:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+  ###############
+  # KIBANA NODE #
+  ###############
+  kibana:
+    image: honvid/elasticsearch-kibana
+    environment:
+      - elasticsearch.url=http://elasticsearch:9200
+      - elasticsearch.username=elastic
+      - elasticsearch.password=pleasechangeme
+      # - xpack.monitoring.ui.container.elasticsearch.enabled=true
+    ports:
+      - "5601:5601"
+    links:
+     - ingest:elasticsearch
+    depends_on:
+      - ingest
+    networks:
+      - elastic
+#############################
+# ELASTICSEARCH DATA VOLUME #
+#############################
+volumes:
+  data:
+################################
+# ELASTICSEARCH BRIDGE NETWORK #
+################################
+networks:
+  elastic:
+    driver: bridge
