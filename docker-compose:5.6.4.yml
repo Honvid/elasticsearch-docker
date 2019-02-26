@@ -7,7 +7,7 @@ services:
   master:
     container_name: master
     restart: unless-stopped
-    image: honvid/elasticsearch
+    image: honvid/elasticsearch:5.6.4
     environment:
       - cluster.name=docker-cluster
       - node.name=node_1
@@ -31,7 +31,7 @@ services:
   ingest:
     container_name: ingest
     restart: unless-stopped
-    image: honvid/elasticsearch
+    image: honvid/elasticsearch:5.6.4
     environment:
       - cluster.name=docker-cluster
       - node.master=true
@@ -70,7 +70,7 @@ services:
   node:
     container_name: node
     restart: unless-stopped
-    image: honvid/elasticsearch
+    image: honvid/elasticsearch:5.6.4
     environment:
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
       - cluster.name=docker-cluster
@@ -98,7 +98,7 @@ services:
   # KIBANA NODE #
   ###############
   kibana:
-    image: honvid/elasticsearch-kibana
+    image: honvid/elasticsearch-kibana:5.6.4
     container_name: kibana
     environment:
       - elasticsearch.url=http://elasticsearch:9200
