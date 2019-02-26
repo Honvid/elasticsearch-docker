@@ -5,11 +5,12 @@ services:
   # ELASTICSEARCH MASTER NODE #
   #############################
   master:
+    container_name: master
     restart: unless-stopped
     image: honvid/elasticsearch
     environment:
       - cluster.name=docker-cluster
-      - node.name=node1
+      - node.name=node_1
       - node.master=true
       - node.ingest=false
       - node.data=true
@@ -28,6 +29,7 @@ services:
   # ELASTICSEARCH CLIENT/INGEST NODE #
   ####################################
   ingest:
+    container_name: ingest
     restart: unless-stopped
     image: honvid/elasticsearch
     environment:
@@ -55,6 +57,7 @@ services:
   # ELASTICSEARCH CLIENT/INGEST NODE #
   ####################################
   head:
+    container_name: head
     restart: unless-stopped
     image: honvid/elasticsearch-head
     ports:
@@ -65,12 +68,13 @@ services:
   # ELASTICSEARCH DATA NODE #
   ###########################
   node:
+    container_name: node
     restart: unless-stopped
     image: honvid/elasticsearch
     environment:
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
       - cluster.name=docker-cluster
-      - node.name=node2
+      - node.name=node_2
       - node.master=false
       - node.ingest=false
       - node.data=true
@@ -95,6 +99,7 @@ services:
   ###############
   kibana:
     image: honvid/elasticsearch-kibana
+    container_name: kibana
     environment:
       - elasticsearch.url=http://elasticsearch:9200
       - elasticsearch.username=elastic

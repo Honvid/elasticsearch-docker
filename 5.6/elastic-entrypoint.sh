@@ -32,7 +32,7 @@ fi
 if [ "$1" = 'master' -a "$(id -u)" = '0' ]; then
 	# Change node into a data node
 	CONFIG=/usr/share/elasticsearch/config/elasticsearch.yml
-	sed -ri "s!^(\#\s*)?(node\.name:).*!\2 'node1'!" $CONFIG
+	sed -ri "s!^(\#\s*)?(node\.name:).*!\2 'master'!" $CONFIG
 	sed -ri "s!^(\#\s*)?(node\.master:).*!\2 'true'!" $CONFIG
 	sed -ri "s!^(\#\s*)?(node\.ingest:).*!\2 'false'!" $CONFIG
 	sed -ri "s!^(\#\s*)?(node\.data:).*!\2 'false'!" $CONFIG
@@ -50,6 +50,7 @@ fi
 if [ "$1" = 'ingest' -a "$(id -u)" = '0' ]; then
 	# Change node into a data node
 	CONFIG=/usr/share/elasticsearch/config/elasticsearch.yml
+	sed -ri "s!^(\#\s*)?(node\.name:).*!\2 'ingest'!" $CONFIG
 	sed -ri "s!^(\#\s*)?(node\.master:).*!\2 'false'!" $CONFIG
 	sed -ri "s!^(\#\s*)?(node\.ingest:).*!\2 'true'!" $CONFIG
 	sed -ri "s!^(\#\s*)?(node\.data:).*!\2 'false'!" $CONFIG
@@ -71,7 +72,7 @@ fi
 if [ "$1" = 'data' -a "$(id -u)" = '0' ]; then
 	# Change node into a data node
 	CONFIG=/usr/share/elasticsearch/config/elasticsearch.yml
-	sed -ri "s!^(\#\s*)?(node\.name:).*!\2 'node2'!" $CONFIG
+	sed -ri "s!^(\#\s*)?(node\.name:).*!\2 'data'!" $CONFIG
 	sed -ri "s!^(\#\s*)?(node\.master:).*!\2 'false'!" $CONFIG
 	sed -ri "s!^(\#\s*)?(node\.ingest:).*!\2 'false'!" $CONFIG
 	sed -ri "s!^(\#\s*)?(node\.data:).*!\2 'true'!" $CONFIG
