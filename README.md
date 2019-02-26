@@ -18,7 +18,7 @@ honvid/elasticsearch-kibana   5.6.4
 ## Getting Started
 
 ```bash
-$ cp docker-compose:5.6.4.yml docker-compose.yml
+$ cp docker-compose-5.6.4.yml docker-compose.yml
 $ docker-compose up
 ```
 
